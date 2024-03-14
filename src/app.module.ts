@@ -1,11 +1,11 @@
-import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 
+import { AdminsModule } from './admins/admins.module';
 import { BotModule } from './bot/bot.module';
 import config from './configuration/config';
-import { HealthModule } from './health/health.module';
-import { UpdatesModule } from './updates/updates.module';
+import { GroupsModule } from './groups/groups.module';
 import { GlobalExceptionFilter } from './utils/filter';
 
 @Module({
@@ -14,9 +14,9 @@ import { GlobalExceptionFilter } from './utils/filter';
       isGlobal: true,
       load: [config],
     }),
-    HealthModule,
-    UpdatesModule,
     BotModule,
+    AdminsModule,
+    GroupsModule,
   ],
   providers: [
     {
