@@ -4,17 +4,18 @@ import { bigintTransformer } from '../../utils/bigintTransformer';
 import { AdminRoles } from '../admins.constants';
 
 @Entity({ name: 'admins' })
-export class Admins {
+export class Admin {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
     type: 'bigint',
     transformer: bigintTransformer,
+    unique: true,
   })
   telegramId: number;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'varchar', length: 40, unique: true })
   username: string;
 
   @Column({ type: 'enum', enum: AdminRoles, default: AdminRoles.ADMIN })
