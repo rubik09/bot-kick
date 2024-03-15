@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { DeleteResult, UpdateResult } from 'typeorm';
 
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
@@ -21,7 +20,7 @@ export class GroupsService {
       throw new HttpException(`Group with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get by id: ${id}`);
+    this.logger.debug(`Group successfully get by id. ${group}`);
 
     return group;
   }
@@ -36,7 +35,7 @@ export class GroupsService {
       throw new HttpException(`Group with name: ${groupName} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get by name: ${groupName}`);
+    this.logger.debug(`Group successfully get by name. ${group}`);
 
     return group;
   }
@@ -65,27 +64,18 @@ export class GroupsService {
 
     await this.groupsRepository.createGroup(createGroupDto);
 
-    this.logger.debug(`Group successfully created`);
+    this.logger.debug(`Group successfully created. ${group}`);
   }
 
-  async deleteGroup(id: Group['id']): Promise<DeleteResult> {
+  async deleteGroup(id: Group['id']): Promise<void> {
     this.logger.log(`Trying to delete group by id: ${id}`);
 
-    const group = await this.groupsRepository.findOneById(id);
+    const { affected } = await this.groupsRepository.deleteGroupById(id);
 
-    if (!group) {
-      this.logger.error(`Group with id: ${id} not exist`);
-      throw new HttpException(`Group with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
-    }
-
-    const deletedGroup = await this.groupsRepository.deleteGroupById(id);
-
-    this.logger.debug(` Group successfully deleted by id: ${id}`);
-
-    return deletedGroup;
+    this.logger.debug(` Group successfully deleted by id. ${affected}`);
   }
 
-  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<UpdateResult> {
+  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<void> {
     this.logger.log(`Trying to update group by id: ${id}`);
 
     const group = await this.groupsRepository.findOneById(id);
@@ -95,10 +85,8 @@ export class GroupsService {
       throw new HttpException(`Group with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const updatedGroup = await this.groupsRepository.updateGroup(id, updateGroupDto);
+    const { affected } = await this.groupsRepository.updateGroup(id, updateGroupDto);
 
-    this.logger.debug(`Group successfully updated by id: ${id}`);
-
-    return updatedGroup;
+    this.logger.debug(`Group successfully updated by id. ${affected}`);
   }
 }

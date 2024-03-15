@@ -26,25 +26,25 @@ export class GroupsRepository {
     return await this.groupRepository.createQueryBuilder('groups').getManyAndCount();
   }
 
-  async findOneByGroupName(groupName: Group['groupName']): Promise<Group> {
+  async findOneByGroupName(groupName: string): Promise<Group> {
     return await this.groupRepository
       .createQueryBuilder('groups')
       .where('groups.groupName = :groupName', { groupName })
       .getOne();
   }
 
-  async findOneById(id: Group['id']): Promise<Group> {
+  async findOneById(id: number): Promise<Group> {
     return await this.groupRepository.createQueryBuilder('groups').where('groups.id = :id', { id }).getOne();
   }
 
-  async findOneByTelegramId(telegramId: Group['telegramId']): Promise<Group> {
+  async findOneByTelegramId(telegramId: number): Promise<Group> {
     return await this.groupRepository
       .createQueryBuilder('groups')
       .where('groups.telegramId = :telegramId', { telegramId })
       .getOne();
   }
 
-  async deleteGroupById(id: Group['id']): Promise<DeleteResult> {
+  async deleteGroupById(id: number): Promise<DeleteResult> {
     return await this.groupRepository
       .createQueryBuilder('groups')
       .delete()
@@ -53,7 +53,7 @@ export class GroupsRepository {
       .execute();
   }
 
-  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<UpdateResult> {
+  async updateGroup(id: number, updateGroupDto: UpdateGroupDto): Promise<UpdateResult> {
     return await this.groupRepository
       .createQueryBuilder('groups')
       .update(Group)

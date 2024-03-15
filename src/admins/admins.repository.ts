@@ -26,25 +26,25 @@ export class AdminsRepository {
     return await this.adminsRepository.createQueryBuilder('admins').getManyAndCount();
   }
 
-  async findOneByUsername(username: Admin['username']): Promise<Admin> {
+  async findOneByUsername(username: string): Promise<Admin> {
     return await this.adminsRepository
       .createQueryBuilder('admins')
       .where('admins.username = :username', { username })
       .getOne();
   }
 
-  async findOneById(id: Admin['id']): Promise<Admin> {
+  async findOneById(id: number): Promise<Admin> {
     return await this.adminsRepository.createQueryBuilder('admins').where('admins.id = :id', { id }).getOne();
   }
 
-  async findOneByTelegramId(telegramId: Admin['telegramId']): Promise<Admin> {
+  async findOneByTelegramId(telegramId: number): Promise<Admin> {
     return await this.adminsRepository
       .createQueryBuilder('admins')
       .where('admins.telegramId = :telegramId', { telegramId })
       .getOne();
   }
 
-  async deleteAdminById(id: Admin['id']): Promise<DeleteResult> {
+  async deleteAdminById(id: number): Promise<DeleteResult> {
     return await this.adminsRepository
       .createQueryBuilder('admins')
       .delete()
@@ -53,7 +53,7 @@ export class AdminsRepository {
       .execute();
   }
 
-  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<UpdateResult> {
+  async updateAdmin(id: number, updateAdminDto: UpdateAdminDto): Promise<UpdateResult> {
     return await this.adminsRepository
       .createQueryBuilder('admins')
       .update(Admin)
