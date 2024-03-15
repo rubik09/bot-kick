@@ -21,6 +21,9 @@ export class Admin {
   @Column({ type: 'enum', enum: AdminRoles, default: AdminRoles.ADMIN })
   adminRoles: AdminRoles;
 
+  @Column({ type: 'varchar', length: 240 })
+  password: string;
+
   @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
 
