@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InsertResult } from 'typeorm';
 
 import { AdminsRepository } from './admins.repository';
 import { CreateAdminDto } from './dto/createAdmin.dto';
@@ -50,7 +51,7 @@ export class AdminsService {
     return admins;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto): Promise<Admin> {
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
     this.logger.log(`Trying to create admin`);
 
     const { telegramId } = createAdminDto;

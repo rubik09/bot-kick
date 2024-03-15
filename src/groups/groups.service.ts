@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InsertResult } from 'typeorm';
 
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
@@ -50,7 +51,7 @@ export class GroupsService {
     return groups;
   }
 
-  async createGroup(createGroupDto: CreateGroupDto): Promise<Group> {
+  async createGroup(createGroupDto: CreateGroupDto): Promise<InsertResult> {
     this.logger.log(`Trying to create group`);
 
     const { telegramId } = createGroupDto;

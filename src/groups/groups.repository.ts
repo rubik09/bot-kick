@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
@@ -13,39 +13,49 @@ export class GroupsRepository {
     private readonly groupRepository: Repository<Group>,
   ) {}
 
-  async createGroup(createGroupDto: CreateGroupDto): Promise<Group> {
-    return await this.groupRepository.save(createGroupDto);
+  async createGroup(createGroupDto: CreateGroupDto): Promise<InsertResult> {
+    return await this.groupRepository.createQueryBuilder().insert().into(Group).values(createGroupDto).execute();
   }
 
   async findAllGroups(): Promise<Group[]> {
-    return await this.groupRepository.find();
+    return await this.groupRepository.createQueryBuilder('group').getMany();
   }
 
   async findOneByGroupName(groupName: Group['groupName']): Promise<Group> {
-    return await this.groupRepository.findOne({
-      where: { groupName },
-    });
+    return await this.groupRepository
+      .createQueryBuilder('group')
+      .where('group.groupName = :groupName', { groupName })
+      .getOne();
   }
 
   async findOneById(id: Group['id']): Promise<Group> {
-    return await this.groupRepository.findOne({
-      where: { id },
-    });
+    return await this.groupRepository.createQueryBuilder('group').where('group.id = :id', { id }).getOne();
   }
 
   async findOneByTelegramId(telegramId: Group['telegramId']): Promise<Group> {
-    return await this.groupRepository.findOne({
-      where: { telegramId },
-    });
+    return await this.groupRepository
+      .createQueryBuilder('group')
+      .where('group.telegramId = :telegramId', { telegramId })
+      .getOne();
   }
 
   async deleteGroupById(id: Group['id']): Promise<number> {
-    const { affected } = await this.groupRepository.delete(id);
+    const { affected } = await this.groupRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Group)
+      .where('id = :id', { id })
+      .execute();
     return affected;
   }
 
   async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<number> {
-    const { affected } = await this.groupRepository.update({ id }, updateGroupDto);
+    const { affected } = await this.groupRepository
+      .createQueryBuilder()
+      .update(Group)
+      .set(updateGroupDto)
+      .where('id = :id', { id })
+      .execute();
     return affected;
   }
 }
