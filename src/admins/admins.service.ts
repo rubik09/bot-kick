@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InsertResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 import { AdminsRepository } from './admins.repository';
 import { CreateAdminDto } from './dto/createAdmin.dto';
@@ -21,7 +21,7 @@ export class AdminsService {
       throw new HttpException(`admin with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get`);
+    this.logger.debug(`admin successfully get by id: ${id}`);
 
     return admin;
   }
@@ -36,7 +36,7 @@ export class AdminsService {
       throw new HttpException(`admin with username: ${username} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get`);
+    this.logger.debug(`admin successfully get by username: ${username}`);
 
     return admin;
   }
@@ -44,14 +44,14 @@ export class AdminsService {
   async getAllAdmins(): Promise<Admin[]> {
     this.logger.log(`Trying to get all Admins`);
 
-    const admins = this.adminsRepository.findAllAdmins();
+    const [admins, count] = await this.adminsRepository.findAllAdmins();
 
-    this.logger.debug(`Admins Sessions successfully get`);
+    this.logger.debug(`${count} Admins successfully get`);
 
     return admins;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<void> {
     this.logger.log(`Trying to create admin`);
 
     const { telegramId } = createAdminDto;
@@ -63,15 +63,13 @@ export class AdminsService {
       throw new HttpException(`admin with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newAdmin = this.adminsRepository.createAdmin(createAdminDto);
+    await this.adminsRepository.createAdmin(createAdminDto);
 
     this.logger.debug(`admin successfully created`);
-
-    return newAdmin;
   }
 
-  async deleteAdmin(id: Admin['id']): Promise<number> {
-    this.logger.log(`Trying to delete admin`);
+  async deleteAdmin(id: Admin['id']): Promise<DeleteResult> {
+    this.logger.log(`Trying to delete admin by id: ${id}`);
 
     const admin = await this.adminsRepository.findOneById(id);
 
@@ -82,13 +80,13 @@ export class AdminsService {
 
     const deletedAdmin = await this.adminsRepository.deleteAdminById(id);
 
-    this.logger.debug(`Admin successfully deleted`);
+    this.logger.debug(`Admin successfully deleted by id: ${id}`);
 
     return deletedAdmin;
   }
 
-  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
-    this.logger.log(`Trying to update admin`);
+  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<UpdateResult> {
+    this.logger.log(`Trying to update admin by id: ${id}`);
 
     const admin = await this.adminsRepository.findOneById(id);
 
@@ -99,7 +97,7 @@ export class AdminsService {
 
     const updatedAdmin = await this.adminsRepository.updateAdmin(id, updateAdminDto);
 
-    this.logger.debug(`Admin successfully updated`);
+    this.logger.debug(`Admin successfully updated by id: ${id}`);
 
     return updatedAdmin;
   }

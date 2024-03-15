@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InsertResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
@@ -21,7 +21,7 @@ export class GroupsService {
       throw new HttpException(`Group with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get`);
+    this.logger.debug(`Group successfully get by id: ${id}`);
 
     return group;
   }
@@ -36,7 +36,7 @@ export class GroupsService {
       throw new HttpException(`Group with name: ${groupName} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get`);
+    this.logger.debug(`Group successfully get by name: ${groupName}`);
 
     return group;
   }
@@ -44,14 +44,14 @@ export class GroupsService {
   async getAllGroups(): Promise<Group[]> {
     this.logger.log(`Trying to get all groups`);
 
-    const groups = this.groupsRepository.findAllGroups();
+    const [groups, count] = await this.groupsRepository.findAllGroups();
 
-    this.logger.debug(`Groups successfully get`);
+    this.logger.debug(`${count} Groups successfully get`);
 
     return groups;
   }
 
-  async createGroup(createGroupDto: CreateGroupDto): Promise<InsertResult> {
+  async createGroup(createGroupDto: CreateGroupDto): Promise<void> {
     this.logger.log(`Trying to create group`);
 
     const { telegramId } = createGroupDto;
@@ -63,15 +63,13 @@ export class GroupsService {
       throw new HttpException(`Group with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newGroup = this.groupsRepository.createGroup(createGroupDto);
+    await this.groupsRepository.createGroup(createGroupDto);
 
     this.logger.debug(`Group successfully created`);
-
-    return newGroup;
   }
 
-  async deleteGroup(id: Group['id']): Promise<number> {
-    this.logger.log(`Trying to delete group`);
+  async deleteGroup(id: Group['id']): Promise<DeleteResult> {
+    this.logger.log(`Trying to delete group by id: ${id}`);
 
     const group = await this.groupsRepository.findOneById(id);
 
@@ -82,13 +80,13 @@ export class GroupsService {
 
     const deletedGroup = await this.groupsRepository.deleteGroupById(id);
 
-    this.logger.debug(`Group successfully deleted`);
+    this.logger.debug(` Group successfully deleted by id: ${id}`);
 
     return deletedGroup;
   }
 
-  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<number> {
-    this.logger.log(`Trying to update group`);
+  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<UpdateResult> {
+    this.logger.log(`Trying to update group by id: ${id}`);
 
     const group = await this.groupsRepository.findOneById(id);
 
@@ -99,7 +97,7 @@ export class GroupsService {
 
     const updatedGroup = await this.groupsRepository.updateGroup(id, updateGroupDto);
 
-    this.logger.debug(`Group successfully updated`);
+    this.logger.debug(`Group successfully updated by id: ${id}`);
 
     return updatedGroup;
   }
