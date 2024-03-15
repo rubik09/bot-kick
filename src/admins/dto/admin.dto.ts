@@ -19,8 +19,4 @@ export class AdminDto {
 
   @IsEnum(AdminRoles)
   adminRoles: Admin['adminRoles'];
-
-  @IsString()
-  @Length(8, 40)
-  password: Admin['password'];
 }

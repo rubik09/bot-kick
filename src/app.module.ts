@@ -6,6 +6,8 @@ import { AdminsModule } from './admins/admins.module';
 import { BotModule } from './bot/bot.module';
 import config from './configuration/config';
 import { GroupsModule } from './groups/groups.module';
+import { HealthModule } from './health/health.module';
+import { UpdatesModule } from './updates/updates.module';
 import { GlobalExceptionFilter } from './utils/filter';
 
 @Module({
@@ -14,6 +16,8 @@ import { GlobalExceptionFilter } from './utils/filter';
       isGlobal: true,
       load: [config],
     }),
+    HealthModule,
+    UpdatesModule,
     BotModule,
     AdminsModule,
     GroupsModule,
