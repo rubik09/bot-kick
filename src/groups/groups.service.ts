@@ -20,7 +20,7 @@ export class GroupsService {
       throw new HttpException(`Group with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get by id. ${group}`);
+    this.logger.debug(`Group successfully get by id: ${id}`);
 
     return group;
   }
@@ -35,7 +35,7 @@ export class GroupsService {
       throw new HttpException(`Group with name: ${groupName} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`Group successfully get by name. ${group}`);
+    this.logger.debug(`Group successfully get by name: ${groupName}`);
 
     return group;
   }
@@ -53,7 +53,7 @@ export class GroupsService {
   async createGroup(createGroupDto: CreateGroupDto): Promise<void> {
     this.logger.log(`Trying to create group`);
 
-    const { telegramId } = createGroupDto;
+    const { telegramId, groupName } = createGroupDto;
 
     const group = await this.groupsRepository.findOneByTelegramId(telegramId);
 
@@ -62,9 +62,9 @@ export class GroupsService {
       throw new HttpException(`Group with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    await this.groupsRepository.createGroup(createGroupDto);
+    this.groupsRepository.createGroup(createGroupDto);
 
-    this.logger.debug(`Group successfully created. ${group}`);
+    this.logger.debug(`Group successfully created with id: ${telegramId} and name: ${groupName}`);
   }
 
   async deleteGroup(id: Group['id']): Promise<void> {
@@ -72,7 +72,7 @@ export class GroupsService {
 
     const { affected } = await this.groupsRepository.deleteGroupById(id);
 
-    this.logger.debug(` Group successfully deleted by id. ${affected}`);
+    this.logger.debug(`Group successfully deleted by id. ${affected}`);
   }
 
   async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<void> {

@@ -13,14 +13,14 @@ export class AdminsService {
   async findAdminById(id: Admin['id']): Promise<Admin> {
     this.logger.log(`Trying to admin info by id: ${id}`);
 
-    const admin = this.adminsRepository.findOneById(id);
+    const admin = await this.adminsRepository.findOneById(id);
 
     if (!admin) {
       this.logger.error(`admin with id: ${id} not found`);
       throw new HttpException(`admin with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get by id. ${admin}`);
+    this.logger.debug(`admin successfully get by id: ${id}`);
 
     return admin;
   }
@@ -28,14 +28,14 @@ export class AdminsService {
   async findAdminByUsername(username: Admin['username']): Promise<Admin> {
     this.logger.log(`Trying to get admin by username: ${username}`);
 
-    const admin = this.adminsRepository.findOneByUsername(username);
+    const admin = await this.adminsRepository.findOneByUsername(username);
 
     if (!admin) {
       this.logger.error(`admin with username: ${username} not found`);
       throw new HttpException(`admin with username: ${username} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get by username. ${admin}`);
+    this.logger.debug(`admin successfully get by username: ${username}`);
 
     return admin;
   }
@@ -53,7 +53,7 @@ export class AdminsService {
   async createAdmin(createAdminDto: CreateAdminDto): Promise<void> {
     this.logger.log(`Trying to create admin`);
 
-    const { telegramId } = createAdminDto;
+    const { telegramId, username } = createAdminDto;
 
     const admin = await this.adminsRepository.findOneByTelegramId(telegramId);
 
@@ -62,9 +62,9 @@ export class AdminsService {
       throw new HttpException(`admin with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newAdmin = await this.adminsRepository.createAdmin(createAdminDto);
+    this.adminsRepository.createAdmin(createAdminDto);
 
-    this.logger.debug(`admin successfully created. ${newAdmin}`);
+    this.logger.debug(`admin successfully created with id: ${telegramId} and name: ${username}`);
   }
 
   async deleteAdmin(id: Admin['id']): Promise<void> {
