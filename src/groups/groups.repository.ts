@@ -22,7 +22,7 @@ export class GroupsRepository {
       .execute();
   }
 
-  async findAllGroups(): Promise<[Group[], number]> {
+  async findAllGroups(): Promise<[Group[], number] | []> {
     return await this.groupRepository.createQueryBuilder('groups').getManyAndCount();
   }
 

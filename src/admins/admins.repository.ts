@@ -22,7 +22,7 @@ export class AdminsRepository {
       .execute();
   }
 
-  async findAllAdmins(): Promise<[Admin[], number]> {
+  async findAllAdmins(): Promise<[Admin[], number] | []> {
     return await this.adminsRepository.createQueryBuilder('admins').getManyAndCount();
   }
 
