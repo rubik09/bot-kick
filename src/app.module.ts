@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdminsModule } from './admins/admins.module';
 import { BotModule } from './bot/bot.module';
@@ -15,6 +16,10 @@ import { GlobalExceptionFilter } from './utils/filter';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => configService.get('POSTGRES_DB_SETTINGS'),
+      inject: [ConfigService],
     }),
     HealthModule,
     UpdatesModule,

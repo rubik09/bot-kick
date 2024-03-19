@@ -25,21 +25,6 @@ export class AdminsService {
     return admin;
   }
 
-  async findAdminByUsername(username: Admin['username']): Promise<Admin> {
-    this.logger.log(`Trying to get admin by username: ${username}`);
-
-    const admin = await this.adminsRepository.findOneByUsername(username);
-
-    if (!admin) {
-      this.logger.error(`admin with username: ${username} not found`);
-      throw new HttpException(`admin with username: ${username} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    this.logger.debug(`admin successfully get by username: ${username}`);
-
-    return admin;
-  }
-
   async getAllAdmins(): Promise<Admin[]> {
     this.logger.log(`Trying to get all Admins`);
 
