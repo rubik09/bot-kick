@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/createAdmin.dto';
@@ -20,17 +20,20 @@ export class AdminsController {
   }
 
   @Post()
-  async createAdmin(@Body() createAdminDto: CreateAdminDto): Promise<void> {
+  async createAdmin(@Body() createAdminDto: CreateAdminDto) {
     await this.adminsService.createAdmin(createAdminDto);
+    throw new HttpException('Админ успешно создан', HttpStatus.CREATED);
   }
 
   @Patch(':id')
-  async updateAdmin(@Param('id') id: Admin['id'], @Body() updateAdminDto: UpdateAdminDto): Promise<void> {
+  async updateAdmin(@Param('id') id: Admin['id'], @Body() updateAdminDto: UpdateAdminDto) {
     await this.adminsService.updateAdmin(id, updateAdminDto);
+    throw new HttpException('Админ успешно обновлён', HttpStatus.OK);
   }
 
   @Delete(':id')
-  async deleteAdmin(@Param('id') id: Admin['id']): Promise<void> {
+  async deleteAdmin(@Param('id') id: Admin['id']) {
     await this.adminsService.deleteAdmin(id);
+    throw new HttpException('Админ успешно удалён', HttpStatus.OK);
   }
 }
