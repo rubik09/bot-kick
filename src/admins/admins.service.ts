@@ -52,23 +52,23 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${telegramId} and name: ${username}`);
   }
 
-  async deleteAdmin(id: Admin['id']): Promise<number> {
+  async deleteAdmin(id: Admin['id']): Promise<string> {
     this.logger.log(`Trying to delete admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.deleteAdminById(id);
 
     this.logger.debug(`Admin successfully deleted. ${affected}`);
 
-    return affected;
+    return affected ? 'Админ успешно удалён' : 'При удалении админа возникла ошибка';
   }
 
-  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
+  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<string> {
     this.logger.log(`Trying to update admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.updateAdmin(id, updateAdminDto);
 
     this.logger.debug(`Admin successfully updated. ${affected}`);
 
-    return affected;
+    return affected ? 'Админ успешно обновлён' : 'При обновлении админа возникла ошибка';
   }
 }

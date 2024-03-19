@@ -27,23 +27,13 @@ export class AdminsController {
 
   @Patch(':id')
   async updateAdmin(@Param('id') id: Admin['id'], @Body() updateAdminDto: UpdateAdminDto) {
-    const affected = await this.adminsService.updateAdmin(id, updateAdminDto);
-
-    if (affected) {
-      throw new HttpException('Админ успешно обновлён', HttpStatus.OK);
-    } else {
-      throw new HttpException('При обновлении админа возникла ошибка', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const message = await this.adminsService.updateAdmin(id, updateAdminDto);
+    throw new HttpException(message, HttpStatus.OK);
   }
 
   @Delete(':id')
   async deleteAdmin(@Param('id') id: Admin['id']) {
-    const affected = await this.adminsService.deleteAdmin(id);
-
-    if (affected) {
-      throw new HttpException('Админ успешно удалён', HttpStatus.OK);
-    } else {
-      throw new HttpException('При удалении админа возникла ошибка', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const message = await this.adminsService.deleteAdmin(id);
+    throw new HttpException(message, HttpStatus.OK);
   }
 }
