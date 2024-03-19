@@ -26,13 +26,6 @@ export class GroupsRepository {
     return await this.groupRepository.createQueryBuilder('groups').getManyAndCount();
   }
 
-  async findOneByGroupName(groupName: string): Promise<Group | null> {
-    return await this.groupRepository
-      .createQueryBuilder('groups')
-      .where('groups.groupName = :groupName', { groupName })
-      .getOne();
-  }
-
   async findOneById(id: number): Promise<Group | null> {
     return await this.groupRepository.createQueryBuilder('groups').where('groups.id = :id', { id }).getOne();
   }

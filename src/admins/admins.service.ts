@@ -25,21 +25,6 @@ export class AdminsService {
     return admin;
   }
 
-  async findAdminByUsername(username: Admin['username']): Promise<Admin> {
-    this.logger.log(`Trying to get admin by username: ${username}`);
-
-    const admin = await this.adminsRepository.findOneByUsername(username);
-
-    if (!admin) {
-      this.logger.error(`admin with username: ${username} not found`);
-      throw new HttpException(`admin with username: ${username} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    this.logger.debug(`admin successfully get by username: ${username}`);
-
-    return admin;
-  }
-
   async getAllAdmins(): Promise<Admin[]> {
     this.logger.log(`Trying to get all Admins`);
 
@@ -67,19 +52,23 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${telegramId} and name: ${username}`);
   }
 
-  async deleteAdmin(id: Admin['id']): Promise<void> {
+  async deleteAdmin(id: Admin['id']): Promise<string> {
     this.logger.log(`Trying to delete admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.deleteAdminById(id);
 
     this.logger.debug(`Admin successfully deleted. ${affected}`);
+
+    return affected ? 'Админ успешно удалён' : 'При удалении админа возникла ошибка';
   }
 
-  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<void> {
+  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<string> {
     this.logger.log(`Trying to update admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.updateAdmin(id, updateAdminDto);
 
     this.logger.debug(`Admin successfully updated. ${affected}`);
+
+    return affected ? 'Админ успешно обновлён' : 'При обновлении админа возникла ошибка';
   }
 }

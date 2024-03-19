@@ -26,13 +26,6 @@ export class AdminsRepository {
     return await this.adminsRepository.createQueryBuilder('admins').getManyAndCount();
   }
 
-  async findOneByUsername(username: string): Promise<Admin | null> {
-    return await this.adminsRepository
-      .createQueryBuilder('admins')
-      .where('admins.username = :username', { username })
-      .getOne();
-  }
-
   async findOneById(id: number): Promise<Admin | null> {
     return await this.adminsRepository.createQueryBuilder('admins').where('admins.id = :id', { id }).getOne();
   }

@@ -13,7 +13,7 @@ export class GroupsService {
   async findGroupById(id: Group['id']): Promise<Group> {
     this.logger.log(`Trying to get group info by id: ${id}`);
 
-    const group = this.groupsRepository.findOneById(id);
+    const group = await this.groupsRepository.findOneById(id);
 
     if (!group) {
       this.logger.error(`Group with id: ${id} not found`);
@@ -21,21 +21,6 @@ export class GroupsService {
     }
 
     this.logger.debug(`Group successfully get by id: ${id}`);
-
-    return group;
-  }
-
-  async findGroupByGroupName(groupName: Group['groupName']): Promise<Group> {
-    this.logger.log(`Trying to get group by name: ${groupName}`);
-
-    const group = this.groupsRepository.findOneByGroupName(groupName);
-
-    if (!group) {
-      this.logger.error(`Group with name: ${groupName} not found`);
-      throw new HttpException(`Group with name: ${groupName} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    this.logger.debug(`Group successfully get by name: ${groupName}`);
 
     return group;
   }
@@ -67,15 +52,17 @@ export class GroupsService {
     this.logger.debug(`Group successfully created with id: ${telegramId} and name: ${groupName}`);
   }
 
-  async deleteGroup(id: Group['id']): Promise<void> {
+  async deleteGroup(id: Group['id']): Promise<string> {
     this.logger.log(`Trying to delete group by id: ${id}`);
 
     const { affected } = await this.groupsRepository.deleteGroupById(id);
 
     this.logger.debug(`Group successfully deleted by id. ${affected}`);
+
+    return affected ? 'Группа успешно удалена' : 'При удалении группы возникла ошибка';
   }
 
-  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<void> {
+  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<string> {
     this.logger.log(`Trying to update group by id: ${id}`);
 
     const group = await this.groupsRepository.findOneById(id);
@@ -88,5 +75,7 @@ export class GroupsService {
     const { affected } = await this.groupsRepository.updateGroup(id, updateGroupDto);
 
     this.logger.debug(`Group successfully updated by id. ${affected}`);
+
+    return affected ? 'Группа успешно обновлена' : 'При обновлении группы возникла ошибка';
   }
 }
