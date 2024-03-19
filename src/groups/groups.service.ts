@@ -52,15 +52,17 @@ export class GroupsService {
     this.logger.debug(`Group successfully created with id: ${telegramId} and name: ${groupName}`);
   }
 
-  async deleteGroup(id: Group['id']): Promise<void> {
+  async deleteGroup(id: Group['id']): Promise<number> {
     this.logger.log(`Trying to delete group by id: ${id}`);
 
     const { affected } = await this.groupsRepository.deleteGroupById(id);
 
     this.logger.debug(`Group successfully deleted by id. ${affected}`);
+
+    return affected;
   }
 
-  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<void> {
+  async updateGroup(id: Group['id'], updateGroupDto: UpdateGroupDto): Promise<number> {
     this.logger.log(`Trying to update group by id: ${id}`);
 
     const group = await this.groupsRepository.findOneById(id);
@@ -73,5 +75,7 @@ export class GroupsService {
     const { affected } = await this.groupsRepository.updateGroup(id, updateGroupDto);
 
     this.logger.debug(`Group successfully updated by id. ${affected}`);
+
+    return affected;
   }
 }

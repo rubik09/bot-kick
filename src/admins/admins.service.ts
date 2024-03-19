@@ -52,19 +52,23 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${telegramId} and name: ${username}`);
   }
 
-  async deleteAdmin(id: Admin['id']): Promise<void> {
+  async deleteAdmin(id: Admin['id']): Promise<number> {
     this.logger.log(`Trying to delete admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.deleteAdminById(id);
 
     this.logger.debug(`Admin successfully deleted. ${affected}`);
+
+    return affected;
   }
 
-  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<void> {
+  async updateAdmin(id: Admin['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
     this.logger.log(`Trying to update admin by id: ${id}`);
 
     const { affected } = await this.adminsRepository.updateAdmin(id, updateAdminDto);
 
     this.logger.debug(`Admin successfully updated. ${affected}`);
+
+    return affected;
   }
 }

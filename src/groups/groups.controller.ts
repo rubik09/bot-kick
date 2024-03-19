@@ -27,13 +27,23 @@ export class GroupsController {
 
   @Patch(':id')
   async updateGroup(@Param('id') id: Group['id'], @Body() updateGroupDto: UpdateGroupDto) {
-    await this.groupsService.updateGroup(id, updateGroupDto);
-    throw new HttpException('Группа успешно обновлена', HttpStatus.OK);
+    const affected = await this.groupsService.updateGroup(id, updateGroupDto);
+
+    if (affected) {
+      throw new HttpException('Группа успешно обновлена', HttpStatus.OK);
+    } else {
+      throw new HttpException('При обновлении группы возникла ошибка', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Delete(':id')
   async deleteGroup(@Param('id') id: Group['id']) {
-    await this.groupsService.deleteGroup(id);
-    throw new HttpException('Группа успешно удалена', HttpStatus.OK);
+    const affected = await this.groupsService.deleteGroup(id);
+
+    if (affected) {
+      throw new HttpException('Группа успешно удалена', HttpStatus.OK);
+    } else {
+      throw new HttpException('При удалении группы возникла ошибка', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
