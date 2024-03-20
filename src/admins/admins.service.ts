@@ -25,6 +25,20 @@ export class AdminsService {
     return admin;
   }
 
+  async findAdminByTelegramId(telegramId: Admin['telegramId']): Promise<Admin> {
+    this.logger.log(`Trying to admin info by telegramId: ${telegramId}`);
+
+    const admin = await this.adminsRepository.findOneByTelegramId(telegramId);
+
+    if (!admin) {
+      this.logger.error(`admin with telegramId: ${telegramId} not found`);
+    }
+
+    this.logger.debug(`admin successfully get by telegramId: ${telegramId}`);
+
+    return admin;
+  }
+
   async getAllAdmins(): Promise<Admin[]> {
     this.logger.log(`Trying to get all Admins`);
 
