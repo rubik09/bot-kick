@@ -32,6 +32,7 @@ export class AdminsService {
 
     if (!admin) {
       this.logger.error(`admin with telegramId: ${telegramId} not found`);
+      return;
     }
 
     this.logger.debug(`admin successfully get by telegramId: ${telegramId}`);

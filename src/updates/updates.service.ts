@@ -1,10 +1,9 @@
 import { Injectable, Logger, LoggerService } from '@nestjs/common';
 import { Message, Update } from 'node-telegram-bot-api';
 
-import { AdminsHandlersService } from '../admin-handler/admin-handler.service';
 import { AdminsService } from '../admins/admins.service';
-import { Admin } from '../admins/entity/admins.entity';
 import { BotService } from '../bot/bot.service';
+import { GroupHandlerService } from '../group-handler/group-handler.service';
 
 @Injectable()
 export class UpdatesService {
@@ -12,27 +11,44 @@ export class UpdatesService {
 
   constructor(
     private readonly adminService: AdminsService,
-    private readonly adminsHandlerService: AdminsHandlersService,
     private readonly botService: BotService,
+    private readonly groupHandlerService: GroupHandlerService,
   ) {}
 
   async handleUpdate({ message }: Update) {
+    this.logger.log(`Update message: ${JSON.stringify(message)}`);
+
     const { from } = message;
     const { id: telegramId } = from;
     const chatId = message.chat.id;
+    const chatType = message.chat.type;
     const admin = await this.adminService.findAdminByTelegramId(telegramId);
 
+    if (chatType !== 'private') return;
+
     if (admin) {
-      return this.handleMessage(message, admin);
+      return this.handleMessage(message);
     } else {
       await this.botService.sendMessage(chatId, 'У вас нет доступа к боту');
     }
   }
 
-  async handleMessage(message: Message, admin: Admin) {
-    const { text } = message;
+  async handleMessage(message: Message) {
+    try {
+      const { text } = message;
+      const chatId = message.chat.id;
+      const startRegExp = new RegExp(/\/start/);
+      const kickRegExp = new RegExp(/\/kick (.+)/);
+      const commandStart = text.match(startRegExp);
+      const commandKick = text.match(kickRegExp);
 
-    this.logger.log(`Update message: ${JSON.stringify(message)}`);
-    await this.adminsHandlerService.handleTextMessage(text, admin);
+      if (commandStart) {
+        await this.botService.sendMessage(chatId, 'Чтобы использовать бота отправьте команду  /kick userId');
+      } else if (commandKick) {
+        await this.groupHandlerService.handleTextMessage(text, Number(commandKick[1]), chatId);
+      }
+    } catch (e) {
+      this.logger.error(`error: ${e}`);
+    }
   }
 }

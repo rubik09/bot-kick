@@ -24,6 +24,22 @@ export class BotProvider implements OnModuleInit {
     await this.bot.sendMessage(chatId, message);
   }
 
+  async leaveChat(chatId: number) {
+    await this.bot.leaveChat(chatId);
+  }
+
+  async getChatMember(chatId: number, userId: number): Promise<TelegramBot.ChatMember> {
+    return await this.bot.getChatMember(chatId, userId);
+  }
+
+  async banChatMember(chatId: number, userId: number) {
+    await this.bot.banChatMember(chatId, userId);
+  }
+
+  async unbanChatMember(chatId: number, userId: number) {
+    await this.bot.unbanChatMember(chatId, userId);
+  }
+
   async onModuleInit() {
     const webHookUrl = this.getWebHookUrl();
 
