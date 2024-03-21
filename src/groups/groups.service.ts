@@ -25,15 +25,24 @@ export class GroupsService {
     return group;
   }
 
-  async getAllGroups(): Promise<number[]> {
+  async getAllGroups(): Promise<Group[]> {
     this.logger.log(`Trying to get all groups`);
 
     const [groups, count] = await this.groupsRepository.findAllGroups();
 
     this.logger.debug(`${count} Groups successfully get`);
 
+    return groups;
+  }
 
-    return groups.map(({telegramId}) => telegramId);
+  async getAllGroupsId(): Promise<number[]> {
+    this.logger.log(`Trying to get all groups`);
+
+    const [groups, count] = await this.groupsRepository.findAllGroups();
+
+    this.logger.debug(`${count} Groups successfully get`);
+
+    return groups.map(({ telegramId }) => telegramId);
   }
 
   async createGroup(createGroupDto: CreateGroupDto): Promise<void> {
