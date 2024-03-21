@@ -11,10 +11,6 @@ export class BotService {
     await this.bot.sendMessage(chatId, message);
   }
 
-  async leaveChat(chatId: number) {
-    await this.bot.leaveChat(chatId);
-  }
-
   async getChatMember(chatId: number, userId: number): Promise<TelegramBot.ChatMember> {
     return await this.bot.getChatMember(chatId, userId);
   }
