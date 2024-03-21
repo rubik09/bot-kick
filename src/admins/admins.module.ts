@@ -10,5 +10,6 @@ import { Admin } from './entity/admins.entity';
   imports: [TypeOrmModule.forFeature([Admin])],
   providers: [AdminsService, AdminsRepository],
   controllers: [AdminsController],
+  exports: [AdminsService],
 })
 export class AdminsModule {}

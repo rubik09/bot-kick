@@ -1,11 +1,12 @@
 import { Injectable, Logger, LoggerService } from '@nestjs/common';
 
-import { AdminActions, AdminState } from '../admins/admins.constants';
+import { AdminActions, AdminState, messages } from '../admins/admins.constants';
 import { AdminsService } from '../admins/admins.service';
 import { TAdminsActions } from '../admins/admins.types';
 import { Admin } from '../admins/entity/admins.entity';
 import { BotService } from '../bot/bot.service';
 import { GroupsService } from '../groups/groups.service';
+import delay from '../utils/delay';
 
 @Injectable()
 export class AdminsHandlersService {
@@ -17,15 +18,16 @@ export class AdminsHandlersService {
     private readonly groupsService: GroupsService,
   ) {}
 
-  async OnModuleInit() {
+  async onModuleInit() {
     this.adminActions = {
       [AdminActions.START]: async (text, admin) => this.handleStart(text, admin),
       [AdminActions.KICK]: async (text, admin) => this.handleKick(text, admin),
-      [AdminActions.DELETE]: (text, admin) => this.handleDelete(text, admin),
+      [AdminActions.DELETE]: async (text, admin) => this.handleDelete(text, admin),
     };
   }
 
   async handleTextMessage(text: string, admin: Admin): Promise<void> {
+    this.logger.log('run handleTextMessage');
     const { adminState } = admin;
     if (adminState === AdminState.WAITING_FOR_APPROVE) {
       return this.waitingForApproveAction(text, admin);
@@ -34,35 +36,48 @@ export class AdminsHandlersService {
   }
 
   async handleStart(text: string, { id, telegramId }: Admin) {
-    const message = `Это бот для удаления пользователей из чатов. Чтобы удалить нажми на команду ${AdminActions.KICK}`;
-    await this.botService.sendMessage(telegramId, message);
+    this.logger.log('run handleStart');
+    await this.botService.sendMessage(telegramId, messages.START);
     await this.adminsService.updateAdmin(id, { adminState: AdminState.START });
   }
 
   async handleKick(text: string, { id, telegramId }: Admin) {
-    const message = `Введите телеграмм айди пользователя которого хотите удалить`;
-    await this.botService.sendMessage(telegramId, message);
+    this.logger.log('run handleKick');
+    await this.botService.sendMessage(telegramId, messages.KICK);
     await this.adminsService.updateAdmin(id, { adminState: AdminState.WAITING_FOR_APPROVE });
   }
 
-  async waitingForApproveAction(text: string, { id, telegramId }: Admin) {
+  async waitingForApproveAction(text: string, { id, telegramId }: Admin): Promise<void> {
+    this.logger.log('run waitingForApproveAction');
     const isValidNumber = this.isValidTelegramId(text);
     if (!isValidNumber) {
-      const message = `Ввели не цифры! Попробуйте еще раз.`;
-      return await this.botService.sendMessage(telegramId, message);
+      return await this.botService.sendMessage(telegramId, messages.NOT_A_NUMBER);
     }
-    const message = `Вы действительно хотите удалить telegramId - ${text} ?`;
+    const message = `${messages.DELETE_ANSWER}${text} ?`;
     const keyboard = [[{ text: AdminActions.DELETE }]];
     await this.botService.sendMessageAndKeyboard(telegramId, message, keyboard);
-    await this.adminsService.updateAdmin(id, { telegramIdToDelete: Number(text) });
+    await this.adminsService.updateAdmin(id, { telegramIdToDelete: Number(text), adminState: AdminState.START });
+    this.logger.log('waitingForApproveAction successfully ended');
   }
 
   async handleDelete(text: string, { id, telegramId, telegramIdToDelete }: Admin) {
-    const groups = await this.groupsService.getAllGroups();
-    
-    //логика удаления
-    await this.botService.sendMessage(id, 'Удаление прошло успешно');
-    await this.adminsService.updateAdmin(id, { adminState: AdminState.START, telegramIdToDelete: 0 });
+    this.logger.log('run handleDelete');
+    const groupsTelegramId = await this.groupsService.getAllGroupsId();
+
+    for (const telegramId of groupsTelegramId) {
+      const userStatus = await this.botService.getChatMember(telegramId, Number(telegramIdToDelete));
+
+      if (userStatus.status === 'member') {
+        await this.botService.banChatMember(telegramId, Number(telegramIdToDelete));
+        await this.botService.unbanChatMember(telegramId, Number(telegramIdToDelete));
+
+        await delay();
+      }
+    }
+
+    await this.botService.sendMessage(telegramId, messages.DELETED_SUCCESSFULLY);
+    await this.adminsService.updateAdmin(id, { telegramIdToDelete: 0 });
+    this.logger.log('user successfully kicked');
   }
 
   private isValidTelegramId(telegramId: string): boolean {

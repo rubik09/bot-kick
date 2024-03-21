@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, LoggerService, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as TelegramBot from 'node-telegram-bot-api';
+import { ChatMember } from 'node-telegram-bot-api';
 import { firstValueFrom } from 'rxjs';
 
 import { ParseModes } from './bot.constants';
@@ -24,6 +25,18 @@ export class BotProvider implements OnModuleInit {
 
   async sendMessage(chatId: number, message: string) {
     await this.bot.sendMessage(chatId, message);
+  }
+
+  async getChatMember(chatId: number, userId: number): Promise<ChatMember> {
+    return await this.bot.getChatMember(chatId, userId);
+  }
+
+  async banChatMember(chatId: number, userId: number) {
+    await this.bot.banChatMember(chatId, userId);
+  }
+
+  async unbanChatMember(chatId: number, userId: number) {
+    await this.bot.unbanChatMember(chatId, userId);
   }
 
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: TelegramBot.KeyboardButton[][]) {

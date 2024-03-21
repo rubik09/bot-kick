@@ -17,8 +17,9 @@ export class UpdatesService {
   async handleUpdate({ message }: Update) {
     const { from } = message;
     const { id: telegramId } = from;
+    const chatType = message.chat.type;
     const admin = await this.adminService.findOneByTelegramId(telegramId);
-    if (admin) return this.handleMessage(message, admin);
+    if (admin && chatType === 'private') return this.handleMessage(message, admin);
   }
 
   async handleMessage(message: Message, admin: Admin) {
