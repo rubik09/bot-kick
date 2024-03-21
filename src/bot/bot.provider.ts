@@ -31,14 +31,12 @@ export class BotProvider implements OnModuleInit {
     return await this.bot.getChatMember(chatId, userId);
   }
 
-  async banChatMember(chatId: number, userId: number): Promise<void> {
+  async banChatMember(chatId: number, userId: number) {
     await this.bot.banChatMember(chatId, userId);
-    return;
   }
 
-  async unbanChatMember(chatId: number, userId: number): Promise<void> {
+  async unbanChatMember(chatId: number, userId: number) {
     await this.bot.unbanChatMember(chatId, userId);
-    return;
   }
 
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: TelegramBot.KeyboardButton[][]) {
