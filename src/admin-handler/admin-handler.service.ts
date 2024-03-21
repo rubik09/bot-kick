@@ -58,6 +58,8 @@ export class AdminsHandlersService {
   }
 
   async handleDelete(text: string, { id, telegramId, telegramIdToDelete }: Admin) {
+    const groups = await this.groupsService.getAllGroups();
+    
     //логика удаления
     await this.botService.sendMessage(id, 'Удаление прошло успешно');
     await this.adminsService.updateAdmin(id, { adminState: AdminState.START, telegramIdToDelete: 0 });
