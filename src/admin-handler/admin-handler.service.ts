@@ -1,4 +1,4 @@
-import { Injectable, Logger, LoggerService, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, LoggerService } from '@nestjs/common';
 
 import { AdminActions, AdminState, messages } from '../admins/admins.constants';
 import { AdminsService } from '../admins/admins.service';
@@ -9,7 +9,7 @@ import { GroupsService } from '../groups/groups.service';
 import delay from '../utils/delay';
 
 @Injectable()
-export class AdminsHandlersService implements OnModuleInit {
+export class AdminsHandlersService {
   private readonly logger: LoggerService = new Logger(AdminsHandlersService.name);
   private adminActions: TAdminsActions;
   constructor(
@@ -18,11 +18,11 @@ export class AdminsHandlersService implements OnModuleInit {
     private readonly groupsService: GroupsService,
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     this.adminActions = {
-      [AdminActions.START]: (text, admin) => this.handleStart(text, admin),
-      [AdminActions.KICK]: (text, admin) => this.handleKick(text, admin),
-      [AdminActions.DELETE]: (text, admin) => this.handleDelete(text, admin),
+      [AdminActions.START]: async (text, admin) => this.handleStart(text, admin),
+      [AdminActions.KICK]: async (text, admin) => this.handleKick(text, admin),
+      [AdminActions.DELETE]: async (text, admin) => this.handleDelete(text, admin),
     };
   }
 
