@@ -7,8 +7,6 @@ import { ClsServiceManager } from 'nestjs-cls';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const config = new ConfigService();
-  const csl = ClsServiceManager.getClsService();
 
   const app = await NestFactory.create(AppModule);
 

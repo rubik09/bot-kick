@@ -9,7 +9,6 @@ import config from './configuration/config';
 import { GroupsModule } from './groups/groups.module';
 import { HealthModule } from './health/health.module';
 import { UpdatesModule } from './updates/updates.module';
-import { GlobalExceptionFilter } from './utils/filter';
 
 @Module({
   imports: [
@@ -26,12 +25,6 @@ import { GlobalExceptionFilter } from './utils/filter';
     BotModule,
     AdminsModule,
     GroupsModule,
-  ],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: GlobalExceptionFilter,
-    },
   ],
 })
 export class AppModule implements NestModule {

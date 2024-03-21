@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { bigintTransformer } from '../../utils/bigintTransformer';
-import { AdminRoles } from '../admins.constants';
+import { AdminRoles, AdminState } from '../admins.constants';
 
 @Entity({ name: 'admins' })
 export class Admin {
@@ -20,6 +20,16 @@ export class Admin {
 
   @Column({ type: 'enum', enum: AdminRoles, default: AdminRoles.ADMIN })
   adminRoles: AdminRoles;
+
+  @Column({ type: 'enum', enum: AdminState, default: null })
+  adminState: AdminState;
+
+  @Column({
+    type: 'bigint',
+    transformer: bigintTransformer,
+    default: 0,
+  })
+  telegramIdToDelete: number;
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
