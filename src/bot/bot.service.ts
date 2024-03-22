@@ -26,4 +26,14 @@ export class BotService {
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: KeyboardButton[][]) {
     await this.bot.sendMessageAndKeyboard(chatId, text, keyboard);
   }
+
+  async getChatAdministratorIds(chatId: number): Promise<number[]> {
+    const admins = await this.bot.getChatAdministrators(chatId);
+    return admins.map(({ user }) => user.id);
+  }
+
+  async getMe(): Promise<number> {
+    const { id } = await this.bot.getMe();
+    return id;
+  }
 }

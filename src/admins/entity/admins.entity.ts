@@ -26,7 +26,6 @@ export class Admin {
 
   @Column({
     type: 'bigint',
-    transformer: bigintTransformer,
     default: 0,
   })
   telegramIdToDelete: number;
