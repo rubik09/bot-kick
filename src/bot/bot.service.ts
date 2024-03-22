@@ -27,8 +27,9 @@ export class BotService {
     await this.bot.sendMessageAndKeyboard(chatId, text, keyboard);
   }
 
-  async getChatAdministrators(chatId: number): Promise<ChatMember[]> {
-    return await this.bot.getChatAdministrators(chatId);
+  async getChatAdministratorIds(chatId: number): Promise<number[]> {
+    const admins = await this.bot.getChatAdministrators(chatId);
+    return admins.map(({ user }) => user.id);
   }
 
   async getMe(): Promise<User> {

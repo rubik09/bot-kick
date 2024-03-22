@@ -1,5 +1,3 @@
-import { ChatMember } from 'node-telegram-bot-api';
-
-export default function findBotAdmin(users: ChatMember[], botId: number): boolean {
-  return !!users.find((user) => user.user?.id === botId);
+export default function findBotAdmin(adminsIdsArr: number[], botId: number): boolean {
+  return !!adminsIdsArr.find((id) => id === botId);
 }

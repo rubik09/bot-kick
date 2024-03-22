@@ -62,10 +62,10 @@ export class GroupsService {
       throw new HttpException(`Group with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const adminsArr = await this.botService.getChatAdministrators(telegramId);
+    const adminsIdsArr = await this.botService.getChatAdministratorIds(telegramId);
     const bot = await this.botService.getMe();
 
-    if (!findBotAdmin(adminsArr, bot.id)) {
+    if (!findBotAdmin(adminsIdsArr, bot.id)) {
       this.logger.error(`Bot is not admin in this group.`);
       throw new HttpException(`Bot is not admin in this group.`, HttpStatus.NOT_FOUND);
     }
