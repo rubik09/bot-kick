@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ChatMember, KeyboardButton } from 'node-telegram-bot-api';
+import { ChatMember, KeyboardButton, User } from 'node-telegram-bot-api';
 
 import { BotProvider } from './bot.provider';
 
@@ -29,5 +29,9 @@ export class BotService {
 
   async getChatAdministrators(chatId: number): Promise<ChatMember[]> {
     return await this.bot.getChatAdministrators(chatId);
+  }
+
+  async getMe(): Promise<User> {
+    return await this.bot.getMe();
   }
 }

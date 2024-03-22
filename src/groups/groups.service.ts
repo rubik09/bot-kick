@@ -63,8 +63,9 @@ export class GroupsService {
     }
 
     const adminsArr = await this.botService.getChatAdministrators(telegramId);
+    const bot = await this.botService.getMe();
 
-    if (!findBotAdmin(adminsArr)) {
+    if (!findBotAdmin(adminsArr, bot.id)) {
       this.logger.error(`Bot is not admin in this group.`);
       throw new HttpException(`Bot is not admin in this group.`, HttpStatus.NOT_FOUND);
     }

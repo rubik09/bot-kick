@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, LoggerService, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as TelegramBot from 'node-telegram-bot-api';
-import { ChatMember } from 'node-telegram-bot-api';
+import { ChatMember, User } from 'node-telegram-bot-api';
 import { firstValueFrom } from 'rxjs';
 
 import { ParseModes } from './bot.constants';
@@ -41,6 +41,10 @@ export class BotProvider implements OnModuleInit {
 
   async getChatAdministrators(chatId: number): Promise<ChatMember[]> {
     return await this.bot.getChatAdministrators(chatId);
+  }
+
+  async getMe(): Promise<User> {
+    return await this.bot.getMe();
   }
 
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: TelegramBot.KeyboardButton[][]) {
