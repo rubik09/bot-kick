@@ -1,3 +1,3 @@
-export default function findBotAdmin(adminsIdsArr: number[], botId: number): boolean {
-  return !!adminsIdsArr.find((id) => id === botId);
+export default function findBotAdmin(adminsIdsArr: number[], botId: number): number {
+  return adminsIdsArr.find((id) => id === botId);
 }
