@@ -4,11 +4,16 @@ import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
 import { Group } from './entity/groups.entity';
 import { GroupsRepository } from './groups.repository';
+import { BotService } from '../bot/bot.service';
+import findBotAdmin from '../utils/findAdmin';
 
 @Injectable()
 export class GroupsService {
   private readonly logger = new Logger(GroupsService.name);
-  constructor(private groupsRepository: GroupsRepository) {}
+  constructor(
+    private groupsRepository: GroupsRepository,
+    private botService: BotService,
+  ) {}
 
   async findGroupById(id: Group['id']): Promise<Group> {
     this.logger.log(`Trying to get group info by id: ${id}`);
@@ -55,6 +60,13 @@ export class GroupsService {
     if (group) {
       this.logger.error(`Group with telegramId: ${telegramId} already exist`);
       throw new HttpException(`Group with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
+    }
+
+    const adminsArr = await this.botService.getChatAdministrators(telegramId);
+
+    if (!findBotAdmin(adminsArr)) {
+      this.logger.error(`Bot is not admin in this group.`);
+      throw new HttpException(`Bot is not admin in this group.`, HttpStatus.NOT_FOUND);
     }
 
     this.groupsRepository.createGroup(createGroupDto);

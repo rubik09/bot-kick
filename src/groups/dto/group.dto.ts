@@ -8,8 +8,8 @@ export class GroupDto {
   @Transform(({ value }) => {
     return Number(value);
   })
-  @Min(10000)
-  @Max(99999999999999)
+  @Min(-999999999999999)
+  @Max(-99999999)
   telegramId: Group['telegramId'];
 
   @IsString()

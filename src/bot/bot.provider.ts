@@ -39,6 +39,10 @@ export class BotProvider implements OnModuleInit {
     await this.bot.unbanChatMember(chatId, userId);
   }
 
+  async getChatAdministrators(chatId: number): Promise<ChatMember[]> {
+    return await this.bot.getChatAdministrators(chatId);
+  }
+
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: TelegramBot.KeyboardButton[][]) {
     try {
       await this.bot.sendMessage(chatId, text, {
