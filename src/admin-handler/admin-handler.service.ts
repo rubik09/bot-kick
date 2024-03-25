@@ -69,7 +69,6 @@ export class AdminsHandlersService {
 
       if (userStatus.status === 'member') {
         await this.botService.banChatMember(telegramId, Number(telegramIdToDelete));
-        await this.botService.unbanChatMember(telegramId, Number(telegramIdToDelete));
 
         await delay();
       }
