@@ -39,10 +39,6 @@ export class BotProvider implements OnModuleInit {
     await this.bot.banChatMember(chatId, userId);
   }
 
-  async unbanChatMember(chatId: number, userId: number) {
-    await this.bot.unbanChatMember(chatId, userId);
-  }
-
   async getChatAdministrators(chatId: number): Promise<ChatMember[]> {
     return await this.bot.getChatAdministrators(chatId);
   }
