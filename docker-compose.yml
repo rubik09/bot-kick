@@ -8,5 +8,11 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "8443:8443"
     restart: always
+    networks:
+      - botstats_default
+
+networks:
+  botstats_default:
+    external: true
