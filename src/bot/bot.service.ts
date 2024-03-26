@@ -19,10 +19,6 @@ export class BotService {
     await this.bot.banChatMember(chatId, userId);
   }
 
-  async unbanChatMember(chatId: number, userId: number) {
-    await this.bot.unbanChatMember(chatId, userId);
-  }
-
   async sendMessageAndKeyboard(chatId: number, text: string, keyboard: KeyboardButton[][]) {
     await this.bot.sendMessageAndKeyboard(chatId, text, keyboard);
   }
