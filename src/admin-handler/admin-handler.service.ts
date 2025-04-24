@@ -61,22 +61,26 @@ export class AdminsHandlersService {
   }
 
   async handleDelete(text: string, { id, telegramId, telegramIdToDelete }: Admin) {
-    this.logger.log('run handleDelete');
-    const groupsTelegramId = await this.groupsService.getAllGroupsId();
+    try {
+      this.logger.log('run handleDelete');
+      const groupsTelegramId = await this.groupsService.getAllGroupsId();
 
-    for (const telegramId of groupsTelegramId) {
-      const userStatus = await this.botService.getChatMember(telegramId, Number(telegramIdToDelete));
+      for (const telegramId of groupsTelegramId) {
+        const userStatus = await this.botService.getChatMember(telegramId, Number(telegramIdToDelete));
 
-      if (userStatus.status === 'member') {
-        await this.botService.banChatMember(telegramId, Number(telegramIdToDelete));
+        if (userStatus.status === 'member') {
+          await this.botService.banChatMember(telegramId, Number(telegramIdToDelete));
 
-        await delay();
+          await delay();
+        }
       }
-    }
 
-    await this.botService.sendMessage(telegramId, messages.DELETED_SUCCESSFULLY);
-    await this.adminsService.updateAdmin(id, { telegramIdToDelete: 0 });
-    this.logger.log('user successfully kicked');
+      await this.botService.sendMessage(telegramId, messages.DELETED_SUCCESSFULLY);
+      await this.adminsService.updateAdmin(id, { telegramIdToDelete: 0 });
+      this.logger.log('user successfully kicked');
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   private isValidTelegramId(telegramId: string): boolean {
