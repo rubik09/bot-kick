@@ -66,6 +66,7 @@ export class AdminsHandlersService {
       const groupsTelegramId = await this.groupsService.getAllGroupsId();
 
       for (const telegramId of groupsTelegramId) {
+        this.logger.log(`id: ${id}, telegramId: ${telegramId}, telegramIdToDelete: ${telegramIdToDelete}`);
         const userStatus = await this.botService.getChatMember(telegramId, Number(telegramIdToDelete));
 
         if (userStatus.status === 'member') {
